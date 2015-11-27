@@ -2,8 +2,8 @@
 #Author  : Arnab Ghosal
 #GIT URL : https://github.com/arnabghosal/pushbullet_PBS
 #Created : 25-Nov-2015
-#Updated : 26-Nov-2015
-#Version : 0.2
+#Updated : 27-Nov-2015
+#Version : 0.2.2
 
 PSH_TKN="" #Insert Pushover Token
 PBS_DTS=$(date +%Y/%m/%d)
@@ -12,6 +12,19 @@ TMP_URL=/dev/shm/url.list
 PSH_URL="https://api.pushbullet.com/v2"
 PBS_LINK="http://www.gocomics.com/pearlsbeforeswine"
 PBS_TXT="<img alt=\"Pearls Before Swine\""
+
+curl > /dev/null 2> /dev/null
+if [[ $? -eq 127 ]]
+then
+	echo "ERROR: Curl not found. Please install curl"
+	exit 99
+fi
+
+if [[ -z $PSH_TKN ]]
+then
+	echo "ERROR: \$PSH_TKN not defined"
+	exit 99
+fi
 
 PBS_IMG=$(wget -qO- "${PBS_LINK}/${PBS_DTS}" | sed 's/></>\n</g' | grep "${PBS_TXT}" | grep -Po '(?<=src=")[^"]*')
 wget -q -O "${PBS_FILE}.gif" "${PBS_IMG}"
